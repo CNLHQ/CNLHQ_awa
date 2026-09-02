@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📁 资源下载中心</title>
+
+  <!-- ===== 外部资源引用：Font Awesome 图标库（CDN） ===== -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    /* ========== 全局重置与基础样式 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+      background-color: #F8FAFC;              /* 页面背景色 */
+      color: #1E293B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========== 顶部区域：标题 + 搜索框 ========== */
+    .header {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); /* 主色 #4F46E5 渐变 */
+      color: #FFFFFF;
+      padding: 48px 20px 56px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+    }
+
+    /* 简约搜索框（仅 UI，不参与真实搜索） */
+    .search-box {
+      display: inline-flex;
+      align-items: center;
+      background: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .search-box i {
+      color: #94A3B8;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      color: #1E293B;
+      background: transparent;
+    }
+
+    /* ========== 中间：文件卡片网格 ========== */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);   /* PC 端一行 3 列 */
+      gap: 24px;
+      margin-top: -32px;                        /* 卡片略微上移，压在头部渐变色上，更有层次感 */
+      padding-bottom: 48px;
+    }
+
+    /* 文件卡片 */
+    .card {
+      background: #FFFFFF;                      /* 卡片纯白 */
+      border-radius: 14px;
+      padding: 28px 24px 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    /* 悬停：向上浮动 5px 并加深阴影 */
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 32px rgba(79, 70, 229, 0.18);
+    }
+
+    /* 文件类型图标 */
+    .card .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    /* 不同文件类型的图标颜色 */
+    .icon-pdf    { color: #EF4444; }   /* 红色：PDF   */
+    .icon-archive{ color: #F97316; }   /* 橙色：压缩包 */
+    .icon-word   { color: #3B82F6; }   /* 蓝色：Word   */
+    .icon-image  { color: #A855F7; }   /* 紫色：图片   */
+    .icon-code   { color: #10B981; }   /* 绿色：代码   */
+
+    /* 文件名称（加粗） */
+    .card .file-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      word-break: break-all;
+    }
+
+    /* 文件大小与上传日期 */
+    .card .meta {
+      font-size: 14px;
+      color: #64748B;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card .meta i {
+      margin-right: 4px;
+      font-size: 13px;
+    }
+
+    /* 下载按钮：蓝色渐变，悬停放大 */
+    .btn-download {
+      display: inline-block;
+      padding: 11px 34px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #FFFFFF;
+      text-decoration: none;
+      background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); /* 蓝色渐变 */
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-download i {
+      margin-right: 6px;
+    }
+
+    .btn-download:hover {
+      transform: scale(1.06);                   /* 悬停放大 */
+      box-shadow: 0 8px 22px rgba(79, 70, 229, 0.45);
+    }
+
+    .btn-download:active {
+      transform: scale(0.98);                   /* 按下轻微缩小，模拟点击反馈 */
+    }
+
+    /* ========== 底部版权信息 ========== */
+    .footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 24px 20px;
+      color: #94A3B8;
+      font-size: 14px;
+      border-top: 1px solid #E2E8F0;
+    }
+
+    /* ========== 响应式：手机端 1 列 ========== */
+    @media (max-width: 768px) {
+      .files-grid {
+        grid-template-columns: 1fr;             /* 手机端一行 1 列 */
+      }
+      .header h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== 顶部：标题 + 搜索框 ===== -->
+  <header class="header">
+    <h1>📁 资源下载中心</h1>
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="搜索文件名称..." aria-label="搜索文件">
+    </div>
+  </header>
+
+  <!-- ===== 中间：文件卡片网格（6 个卡片） ===== -->
+  <main class="container">
+    <section class="files-grid">
+
+      <!-- 卡片 1：产品手册.pdf -->
+      <article class="card">
+        <i class="fa-solid fa-file-pdf icon icon-pdf"></i>
+        <h3 class="file-name">产品手册.pdf</h3>
+        <div class="meta">
+          <span><i class="fa-solid fa-database"></i>2.5 MB</span>
+          <span><i class="fa-regular fa-calendar"></i>2026-08-20</span>
+        </div>
+        <!-- download 属性指向占位链接，点击后弹窗提示（模拟交互），确定后执行下载 -->
+        <a class="btn-download" href="https://example.com/file" download="产品手册.pdf"
+           data-name="产品手册.pdf" onclick="prepareDownload(this)">
+          <i class="fa-solid fa-download"></i>立即下载
+        </a>
+      </article>
+
+      <!-- 卡片 2：项目源码.zip -->
+      <article class="card">
+        <i class="fa-solid fa-file-archive icon icon-archive"></i>
+        <h3 class="file-name">项目源码.zip</h3>
+        <div class="meta">
+          <span><i class="fa-solid fa-database"></i>15.8 MB</span>
+          <span><i class="fa-regular fa-calendar"></i>2026-08-18</span>
+        </div>
+        <a class="btn-download" href="https://example.com/file" download="项目源码.zip"
+           data-name="项目源码.zip" onclick="prepareDownload(this)">
+          <i class="fa-solid fa-download"></i>立即下载
+        </a>
+      </article>
+
+      <!-- 卡片 3：设计素材包.rar -->
+      <article class="card">
+        <i class="fa-solid fa-file-archive icon icon-archive"></i>
+        <h3 class="file-name">设计素材包.rar</h3>
+        <div class="meta">
+          <span><i class="fa-solid fa-database"></i>8.2 MB</span>
+          <span><i class="fa-regular fa-calendar"></i>2026-08-15</span>
+        </div>
+        <a class="btn-download" href="https://example.com/file" download="设计素材包.rar"
+           data-name="设计素材包.rar" onclick="prepareDownload(this)">
+          <i class="fa-solid fa-download"></i>立即下载
+        </a>
+      </article>
+
+      <!-- 卡片 4：年度报表.docx -->
+      <article class="card">
+        <i class="fa-solid fa-file-word icon icon-word"></i>
+        <h3 class="file-name">年度报表.docx</h3>
+        <div class="meta">
+          <span><i class="fa-solid fa-database"></i>1.1 MB</span>
+          <span><i class="fa-regular fa-calendar"></i>2026-08-10</span>
+        </div>
+        <a class="btn-download" href="https://example.com/file" download="年度报表.docx"
+           data-name="年度报表.docx" onclick="prepareDownload(this)">
+          <i class="fa-solid fa-download"></i>立即下载
+        </a>
+      </article>
+
+      <!-- 卡片 5：宣传海报.png -->
+      <article class="card">
+        <i class="fa-solid fa-file-image icon icon-image"></i>
+        <h3 class="file-name">宣传海报.png</h3>
+        <div class="meta">
+          <span><i class="fa-solid fa-database"></i>4.6 MB</span>
+          <span><i class="fa-regular fa-calendar"></i>2026-08-05</span>
+        </div>
+        <a class="btn-download" href="https://example.com/file" download="宣传海报.png"
+           data-name="宣传海报.png" onclick="prepareDownload(this)">
+          <i class="fa-solid fa-download"></i>立即下载
+        </a>
+      </article>
+
+      <!-- 卡片 6：数据库脚本.sql -->
+      <article class="card">
+        <i class="fa-solid fa-file-code icon icon-code"></i>
+        <h3 class="file-name">数据库脚本.sql</h3>
+        <div class="meta">
+          <span><i class="fa-solid fa-database"></i>5.7 MB</span>
+          <span><i class="fa-regular fa-calendar"></i>2026-08-01</span>
+        </div>
+        <a class="btn-download" href="https://example.com/file" download="数据库脚本.sql"
+           data-name="数据库脚本.sql" onclick="prepareDownload(this)">
+          <i class="fa-solid fa-download"></i>立即下载
+        </a>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- ===== 底部版权信息 ===== -->
+  <footer class="footer">
+    © 2026 我的资源站
+  </footer>
+
+  <script>
+    /**
+     * 模拟下载交互反馈：
+     * 点击“立即下载”后先弹窗提示“正在准备下载：[文件名]”，
+     * 确定后浏览器会继续执行 <a> 标签 download 属性指向的下载行为。
+     */
+    function prepareDownload(link) {
+      var fileName = link.getAttribute('data-name'); // 读取卡片上的文件名
+      alert('正在准备下载：' + fileName);             // 模拟交互反馈
+      // 不阻止默认行为，点击“确定”后浏览器继续下载
+    }
+  </script>
+</body>
+</html>
